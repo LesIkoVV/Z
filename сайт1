@@ -1,0 +1,618 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Дети с ОВЗ — Инклюзия и поддержка</title>
+
+<!-- Подключаем современные шрифты Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #0b0d12;
+    --card: #141821;
+    --accent: #4da3ff;
+    --accent-glow: rgba(77, 163, 255, 0.3);
+    --text: #ffffff;
+    --muted: #9aa3ad;
+    --card-hover: #1e2533;
+    --border-glow: rgba(77, 163, 255, 0.2);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.5;
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+  }
+  
+  /* Декоративный фон */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle at 15% 30%, rgba(77, 163, 255, 0.03) 2%, transparent 2.5%),
+                      radial-gradient(circle at 85% 70%, rgba(77, 163, 255, 0.04) 1.8%, transparent 2.2%);
+    background-size: 48px 48px, 60px 60px;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0f131a;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--accent);
+    border-radius: 10px;
+  }
+  
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+    isolation: isolate;
+  }
+  
+  .hero h1 {
+    font-size: clamp(42px, 8vw, 72px);
+    font-weight: 700;
+    font-family: 'Playfair Display', serif;
+    background: linear-gradient(135deg, #FFFFFF 30%, #4da3ff 80%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    margin-bottom: 20px;
+    letter-spacing: -0.02em;
+  }
+  
+  .hero p {
+    font-size: 1.3rem;
+    color: var(--muted);
+    max-width: 580px;
+    margin-top: 8px;
+  }
+  
+  .btn {
+    margin-top: 32px;
+    padding: 14px 32px;
+    background: rgba(77, 163, 255, 0.12);
+    border: 1px solid rgba(77, 163, 255, 0.5);
+    border-radius: 60px;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    width: fit-content;
+  }
+  
+  .btn:hover {
+    background: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 8px 20px rgba(77, 163, 255, 0.3);
+    transform: scale(1.02);
+  }
+  
+  section {
+    padding: 80px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  
+  h2 {
+    font-size: 2.3rem;
+    font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 32px;
+    letter-spacing: -0.3px;
+    border-left: 5px solid var(--accent);
+    padding-left: 20px;
+  }
+  
+  /* ========== КАРТОЧКИ С ПЕРЕВОРОТОМ ========== */
+  .flip-card {
+    background-color: transparent;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    perspective: 1500px;
+    cursor: pointer;
+  }
+  
+  .flip-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.7s cubic-bezier(0.23, 1, 0.32, 1);
+    transform-style: preserve-3d;
+    border-radius: 28px;
+  }
+  
+  .flip-card.flipped .flip-inner {
+    transform: rotateY(180deg);
+  }
+  
+  /* передняя и задняя стороны */
+  .flip-front, .flip-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 28px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(20, 24, 33, 0.9);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(77, 163, 255, 0.2);
+    box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+  }
+  
+  .flip-front {
+    gap: 14px;
+  }
+  
+  .flip-back {
+    background: linear-gradient(135deg, #1a1f2e, #141821);
+    transform: rotateY(180deg);
+    gap: 16px;
+    text-align: center;
+  }
+  
+  .flip-back p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+    color: #d0d5dd;
+  }
+  
+  .flip-back .back-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  
+  .flip-card:hover .flip-front,
+  .flip-card:hover .flip-back {
+    border-color: var(--accent);
+    background: var(--card-hover);
+  }
+  
+  .card-icon {
+    font-size: 52px;
+    background: rgba(77, 163, 255, 0.1);
+    width: 85px;
+    height: 85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  
+  .front-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+  
+  /* Сетка для flip карточек */
+  .grid {
+    display: grid;
+    gap: 24px;
+    margin-top: 20px;
+  }
+  
+  @media (min-width: 640px) {
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  /* Обычные карточки (без переворота) */
+  .card {
+    background: rgba(20, 24, 33, 0.8);
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(77, 163, 255, 0.15);
+    padding: 24px;
+    border-radius: 28px;
+    margin-bottom: 20px;
+    transition: all 0.35s ease;
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  
+  .card.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .card:hover {
+    background: var(--card-hover);
+    border-color: var(--accent);
+    transform: translateY(-5px);
+  }
+  
+  /* Словарь стили */
+  .term {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .term h3 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--accent);
+  }
+  
+  .term h3::before {
+    content: "📖";
+    font-size: 28px;
+  }
+  
+  .term p {
+    color: var(--muted);
+    padding-left: 44px;
+  }
+  
+  /* Поиск */
+  .search-wrapper {
+    position: relative;
+    margin-bottom: 28px;
+  }
+  
+  .search-icon {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    pointer-events: none;
+  }
+  
+  input {
+    width: 100%;
+    padding: 14px 20px 14px 48px;
+    border-radius: 60px;
+    border: 1px solid #2a2f3e;
+    background: #1a1f2c;
+    color: white;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: #202534;
+  }
+  
+  .inspire-banner {
+    margin-top: 40px;
+    border-radius: 32px;
+    overflow: hidden;
+    box-shadow: 0 20px 30px -15px rgba(0, 0, 0, 0.5);
+  }
+  
+  .inspire-banner img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  
+  .inspire-banner:hover img {
+    transform: scale(1.02);
+  }
+  
+  /* Нижняя навигация */
+  .nav {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    background: rgba(15, 19, 26, 0.85);
+    backdrop-filter: blur(16px);
+    display: flex;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 60px;
+    border: 1px solid rgba(77, 163, 255, 0.3);
+    z-index: 1000;
+  }
+  
+  .nav button {
+    background: transparent;
+    border: none;
+    color: var(--muted);
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 40px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .nav button.active {
+    background: var(--accent);
+    color: #0b0d12;
+    font-weight: 600;
+  }
+  
+  .nav button:hover:not(.active) {
+    color: white;
+    background: #2a2f3e;
+  }
+  
+  .quote-block {
+    margin-top: 40px;
+    background: linear-gradient(120deg, #10141e, #0b0d12);
+    border-radius: 28px;
+    padding: 24px;
+    border-left: 6px solid var(--accent);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+  }
+  
+  .quote-block img {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .quote-text {
+    flex: 1;
+  }
+  
+  @media (max-width: 600px) {
+    .front-text { font-size: 1rem; }
+    .card-icon { width: 65px; height: 65px; font-size: 40px; }
+    .flip-back p { font-size: 0.85rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero" id="hero">
+    <h1>Дети с ОВЗ<br>🌟 Равные возможности</h1>
+    <p>Поддержка, понимание и инклюзивное общество — путь к счастливому детству каждого ребёнка.</p>
+    <button class="btn" onclick="scrollToSection('about')">✨ Узнать больше</button>
+    
+    <div style="margin-top: 48px; max-width: 380px; border-radius: 32px; overflow: hidden; box-shadow: 0 12px 25px -12px black;">
+      <img src="https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=600&auto=format" 
+           alt="Дети играют вместе, инклюзия" 
+           style="width:100%; height: auto; display: block; object-fit: cover; aspect-ratio: 16/9;">
+    </div>
+</div>
+
+<!-- Секция: что такое ОВЗ -->
+<section id="about">
+    <h2>Что такое ОВЗ</h2>
+    <div class="card">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+        <img src="https://images.unsplash.com/photo-1577896851231-70ef18881754?w=300&auto=format" 
+             alt="Дети с поддержкой" 
+             style="width: 100px; height: 100px; border-radius: 30px; object-fit: cover;">
+        <div><strong style="color: var(--accent);">📌 Ограниченные возможности здоровья (ОВЗ)</strong> — это особенности физического или психического развития ребёнка, которые требуют особых условий обучения, воспитания и социальной поддержки.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: center;">
+        <img src="https://images.unsplash.com/photo-1555252333-9f8e92e65df9?w=300&auto=format" 
+             alt="Образование равные права" 
+             style="width: 100px; height: 100px; border-radius: 30px; object-fit: cover;">
+        <div>Дети с ОВЗ могут иметь нарушения слуха, зрения, речи, опорно-двигательного аппарата или особенности развития, влияющие на обучение и коммуникацию. Важно: каждый ребёнок уникален и талантлив!</div>
+      </div>
+    </div>
+    
+    <div class="inspire-banner">
+      <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1000&auto=format" alt="Дети в школе инклюзивное образование">
+    </div>
+</section>
+
+<!-- ========== КАРТОЧКИ С ПЕРЕВОРОТОМ ========== -->
+<section id="cards">
+    <h2>Почему это важно 💡</h2>
+    <div class="grid">
+      
+      <!-- Карточка 1: Равный доступ -->
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="card-icon">🎓</span>
+            <span class="front-text">Равный доступ к образованию</span>
+          </div>
+          <div class="flip-back">
+            <span class="back-title">📖 Что это значит?</span>
+            <p>Каждый ребёнок, независимо от особенностей здоровья, имеет право учиться в школе, получать знания и развиваться. Адаптированные программы и тьюторы помогают сделать обучение комфортным.</p>
+            <span style="font-size: 28px;">✨</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Карточка 2: Инклюзивная среда -->
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="card-icon">🤝</span>
+            <span class="front-text">Инклюзивная среда</span>
+          </div>
+          <div class="flip-back">
+            <span class="back-title">🌍 Инклюзия</span>
+            <p>Среда, где все дети учатся и общаются вместе, без барьеров и предрассудков. Это пространство уважения, дружбы и взаимопомощи, где каждый чувствует себя нужным.</p>
+            <span style="font-size: 28px;">🤗</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Карточка 3: Поддержка специалистов -->
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="card-icon">🧑‍🏫</span>
+            <span class="front-text">Поддержка специалистов</span>
+          </div>
+          <div class="flip-back">
+            <span class="back-title">👩‍⚕️ Команда профессионалов</span>
+            <p>Психологи, логопеды, дефектологи, тьюторы и социальные педагоги работают вместе, чтобы помочь ребёнку раскрыть способности, адаптироваться и поверить в себя.</p>
+            <span style="font-size: 28px;">💙</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Карточка 4: Социальная адаптация -->
+      <div class="flip-card" onclick="this.classList.toggle('flipped')">
+        <div class="flip-inner">
+          <div class="flip-front">
+            <span class="card-icon">🌈</span>
+            <span class="front-text">Социальная адаптация</span>
+          </div>
+          <div class="flip-back">
+            <span class="back-title">🤝 Дружба и общение</span>
+            <p>Умение общаться, находить друзей, участвовать в жизни класса и общества. Адаптация помогает детям с ОВЗ чувствовать себя уверенно и счастливо среди сверстников.</p>
+            <span style="font-size: 28px;">🌟</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Доп картинка -->
+</section>
+
+<!-- СЛОВАРЬ -->
+<section id="dict">
+  <h2>📚 Словарь инклюзии</h2>
+  <div class="search-wrapper">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="search" placeholder="Поиск по словарю...">
+  </div>
+  
+  <div class="card term">
+    <h3>ОВЗ</h3>
+    <p>Ограниченные возможности здоровья — особенности развития, требующие специальных условий обучения. Важно понимать: это не приговор, а особый путь развития.</p>
+  </div>
+
+  <div class="card term">
+    <h3>Инклюзия</h3>
+    <p>Подход, при котором все дети учатся вместе независимо от их особенностей. Инклюзия создаёт атмосферу уважения и принятия.</p>
+  </div>
+
+  <div class="card term">
+    <h3>Адаптация</h3>
+    <p>Процесс приспособления ребёнка к учебной и социальной среде. Адаптированные программы помогают раскрыть потенциал.</p>
+  </div>
+
+  <div class="card term">
+    <h3>Специальные условия</h3>
+    <p>Особые методы обучения, технические средства, помощь тьюторов и психологов, необходимые для детей с ОВЗ.</p>
+  </div>
+  
+  <div class="quote-block">
+    <img src="https://images.unsplash.com/photo-1544717304-3c0b087eecb0?w=200&auto=format" alt="Дружба">
+    <div class="quote-text">
+      <p style="margin:0; font-size: 1rem;">«Каждый ребёнок заслуживает быть услышанным и понятым. Инклюзия — это про человечность.»</p>
+      <span style="color: var(--accent); font-size: 0.8rem;">— Современная педагогика</span>
+    </div>
+  </div>
+</section>
+
+<!-- Навигация -->
+<div class="nav">
+  <button onclick="scrollToSection('hero')">🏠 Главная</button>
+  <button onclick="scrollToSection('about')">📖 О</button>
+  <button onclick="scrollToSection('cards')">🧩 Блоки</button>
+  <button onclick="scrollToSection('dict')">📙 Словарь</button>
+</div>
+
+<script>
+  function scrollToSection(id) {
+    document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // анимация обычных карточек
+  const cards = document.querySelectorAll('.card');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('show');
+    });
+  }, { threshold: 0.1 });
+  cards.forEach(c => observer.observe(c));
+
+  // поиск
+  const searchInput = document.getElementById('search');
+  const termCards = document.querySelectorAll('.term');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value.toLowerCase();
+      termCards.forEach(card => {
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(val) ? 'flex' : 'none';
+      });
+    });
+  }
+
+  // активная навигация
+  const sections = document.querySelectorAll('#hero, #about, #cards, #dict');
+  const navBtns = document.querySelectorAll('.nav button');
+  window.addEventListener('scroll', () => {
+    let current = '';
+    const scrollPos = window.scrollY + 180;
+    sections.forEach(sec => {
+      const top = sec.offsetTop;
+      const bottom = top + sec.offsetHeight;
+      if (scrollPos >= top && scrollPos < bottom) current = sec.id;
+    });
+    navBtns.forEach(btn => {
+      btn.classList.remove('active');
+      const onclickAttr = btn.getAttribute('onclick');
+      if (onclickAttr && onclickAttr.includes(current)) btn.classList.add('active');
+      if (current === 'hero' && onclickAttr?.includes('hero')) btn.classList.add('active');
+    });
+  });
+
+  // начальный показ карточек, которые уже видны
+  setTimeout(() => {
+    cards.forEach(c => {
+      const rect = c.getBoundingClientRect();
+      if (rect.top < window.innerHeight - 100) c.classList.add('show');
+    });
+  }, 100);
+</script>
+</body>
+</html>
